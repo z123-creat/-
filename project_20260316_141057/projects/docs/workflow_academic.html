@@ -1,0 +1,534 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>工作流流程图 - 学术论文版</title>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Times New Roman', Times, serif;
+            background: #ffffff;
+            min-height: 100vh;
+            padding: 40px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .paper-container {
+            max-width: 850px;
+            width: 100%;
+            background: white;
+        }
+
+        .title-section {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #000;
+        }
+
+        .title-section h1 {
+            font-size: 20px;
+            color: #000;
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+
+        .title-section p {
+            font-size: 12px;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        .diagram-container {
+            background: white;
+            border: 1px solid #000;
+            padding: 30px;
+            margin: 20px 0;
+        }
+
+        .figure-caption {
+            font-size: 11px;
+            color: #000;
+            margin-top: 15px;
+            text-align: justify;
+            line-height: 1.6;
+            text-indent: 2em;
+        }
+
+        .legend {
+            margin-top: 30px;
+            padding: 20px;
+            border: 1px solid #e0e0e0;
+            background: #fafafa;
+        }
+
+        .legend h3 {
+            font-size: 14px;
+            font-weight: bold;
+            margin-bottom: 15px;
+            color: #000;
+        }
+
+        .legend-items {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            font-size: 11px;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .legend-symbol {
+            width: 20px;
+            height: 20px;
+            border: 1.5px solid #000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 10px;
+        }
+
+        .legend-symbol.start {
+            border-radius: 50%;
+        }
+
+        .legend-symbol.process {
+            background: #f5f5f5;
+            border-radius: 2px;
+        }
+
+        .legend-symbol.decision {
+            background: white;
+            transform: rotate(45deg);
+            width: 14px;
+            height: 14px;
+        }
+
+        .legend-symbol.knowledge {
+            background: #e8f4f8;
+            border-radius: 2px;
+        }
+
+        .legend-symbol.ai {
+            background: #f5e8ff;
+            border-radius: 2px;
+        }
+
+        .download-section {
+            margin-top: 40px;
+            padding: 20px;
+            background: #f8f9fa;
+            border: 1px solid #e0e0e0;
+            width: 100%;
+            max-width: 850px;
+        }
+
+        .download-section h3 {
+            font-size: 14px;
+            font-weight: bold;
+            margin-bottom: 15px;
+            color: #000;
+        }
+
+        .download-btn {
+            display: inline-block;
+            padding: 10px 24px;
+            margin: 5px;
+            background: #000;
+            color: white;
+            text-decoration: none;
+            border-radius: 0;
+            font-size: 12px;
+            font-family: 'Times New Roman', Times, serif;
+            transition: background 0.3s;
+            border: 1px solid #000;
+        }
+
+        .download-btn:hover {
+            background: #333;
+        }
+
+        .note {
+            font-size: 11px;
+            color: #333;
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid #e0e0e0;
+            line-height: 1.6;
+        }
+
+        .specifications {
+            margin-top: 20px;
+            padding: 15px;
+            background: #fff;
+            border: 1px solid #e0e0e0;
+        }
+
+        .specifications table {
+            width: 100%;
+            font-size: 11px;
+            border-collapse: collapse;
+        }
+
+        .specifications th,
+        .specifications td {
+            padding: 8px 12px;
+            text-align: left;
+            border: 1px solid #e0e0e0;
+        }
+
+        .specifications th {
+            background: #f5f5f5;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="paper-container">
+        <div class="title-section">
+            <h1>Figure 1: Workflow of 3D Genome Analysis Agent</h1>
+            <p>
+                该流程图展示了三维基因组分析智能体的完整工作流程，包括知识检索、数据处理、AI分析和结果保存四个主要阶段。
+                基于 LangChain 和 LangGraph 框架构建，整合了多种专业工具实现端到端的自动化分析。
+            </p>
+        </div>
+
+        <div class="diagram-container">
+            <div id="workflow-diagram">
+                <pre class="mermaid">
+                flowchart TB
+                    Start([开始]):::start
+
+                    Start --> Init[初始化智能体]:::process
+
+                    Init --> Split1{检索阶段}:::decision
+
+                    Split1 --> Knode[知识库检索]:::knowledge
+                    Split1 --> Hnode[记忆库检索]:::knowledge
+
+                    Knode --> Merge1{汇合}:::decision
+                    Hnode --> Merge1
+
+                    Merge1 --> Pnode[需求解析]:::ai
+
+                    Pnode --> Dnode[确定工具调用]:::process
+
+                    Dnode --> Split2{分析阶段}:::decision
+
+                    Split2 --> Cnode[Compartment分析]:::ai
+                    Split2 --> Gnode[通用数据分析]:::ai
+                    Split2 --> Tnode[TAD分析]:::ai
+
+                    Cnode --> Merge2{汇合}:::decision
+                    Gnode --> Merge2
+                    Tnode --> Merge2
+
+                    Merge2 --> Rnode[结果分析]:::ai
+
+                    Rnode --> Conode[生成初步结论]:::ai
+
+                    Conode --> Cnode2[结论检查]:::ai
+
+                    Cnode2 --> Snode[保存结论]:::knowledge
+
+                    Snode --> End([结束]):::start
+
+                    %% 学术论文配色方案 - 单色调
+                    classDef start fill:#ffffff,stroke:#000000,stroke-width:2px,color:#000000
+                    classDef process fill:#f8f8f8,stroke:#000000,stroke-width:1.5px,color:#000000
+                    classDef knowledge fill:#f0f5f9,stroke:#000000,stroke-width:1.5px,color:#000000
+                    classDef ai fill:#f8f0f9,stroke:#000000,stroke-width:1.5px,color:#000000
+                    classDef decision fill:#ffffff,stroke:#000000,stroke-width:1.5px,color:#000000
+
+                    %% 黑色连接线
+                    linkStyle default stroke:#000000,stroke-width:1px,color:#000000
+
+                    %% 字体配置
+                    classDef base font-family:'Times New Roman',Times,serif,font-size:11px
+                </pre>
+            </div>
+        </div>
+
+        <div class="figure-caption">
+            <strong>Figure 1.</strong> Workflow diagram of the 3D genome analysis agent. The agent is constructed based on LangChain and LangGraph frameworks, integrating multiple specialized tools to implement end-to-end automated analysis of mcool files. The workflow consists of four main stages: knowledge retrieval, data processing, AI analysis, and result preservation. Blue nodes represent data retrieval and storage operations, while purple nodes represent AI analysis and processing operations. Diamond-shaped nodes indicate process branching and merging points.
+        </div>
+
+        <div class="legend">
+            <h3>图例说明 (Legend)</h3>
+            <div class="legend-items">
+                <div class="legend-item">
+                    <div class="legend-symbol start">●</div>
+                    <span>开始/结束节点 (Start/End)</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-symbol process">□</div>
+                    <span>处理节点 (Process)</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-symbol decision">◆</div>
+                    <span>决策节点 (Decision)</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-symbol knowledge">K</div>
+                    <span>知识检索 (Knowledge)</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-symbol ai">AI</div>
+                    <span>AI分析 (AI Analysis)</span>
+                </div>
+                <div class="legend-item">
+                    <span style="color: #000;">━━━</span>
+                    <span>流程方向 (Flow Direction)</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="specifications">
+            <h3>技术规格 (Technical Specifications)</h3>
+            <table>
+                <tr>
+                    <th>规格项</th>
+                    <th>参数值</th>
+                </tr>
+                <tr>
+                    <td>框架</td>
+                    <td>LangChain 1.0 + LangGraph</td>
+                </tr>
+                <tr>
+                    <td>语言</td>
+                    <td>Python 3.12</td>
+                </tr>
+                <tr>
+                    <td>核心依赖</td>
+                    <td>cooler, numpy, scipy, scikit-learn</td>
+                </tr>
+                <tr>
+                    <td>数据格式</td>
+                    <td>mcool (Hi-C contact maps)</td>
+                </tr>
+                <tr>
+                    <td>存储</td>
+                    <td>Supabase PostgreSQL</td>
+                </tr>
+                <tr>
+                    <td>知识库</td>
+                    <td>Coze Knowledge SDK</td>
+                </tr>
+                <tr>
+                    <td>工具数量</td>
+                    <td>10 个专业工具</td>
+                </tr>
+            </table>
+        </div>
+
+        <div class="download-section">
+            <h3>📥 导出选项 (Export Options)</h3>
+            <a href="#" class="download-btn" onclick="downloadSVG()">Download SVG</a>
+            <a href="#" class="download-btn" onclick="downloadPNG()">Download PNG</a>
+            <a href="#" class="download-btn" onclick="downloadPDF()">Download PDF</a>
+            <a href="#" class="download-btn" onclick="copyMermaid()">Copy Mermaid</a>
+            <a href="#" class="download-btn" onclick="copyLatex()">Copy LaTeX TikZ</a>
+            <div class="note">
+                <strong>使用说明 (Usage Notes):</strong><br>
+                • <strong>SVG 格式:</strong> 矢量图，适合在论文中使用，可以无限放大不失真，推荐用于期刊投稿<br>
+                • <strong>PNG 格式:</strong> 高清位图（300 DPI），适合直接插入文档和演示文稿<br>
+                • <strong>PDF 格式:</strong> 适合 LaTeX 文档使用，保持矢量特性<br>
+                • <strong>Mermaid 代码:</strong> 可以在支持 Mermaid 的编辑器中使用（Obsidian, Typora, GitHub）<br>
+                • <strong>LaTeX TikZ:</strong> 适合 LaTeX 论文直接使用，可进一步编辑
+            </div>
+        </div>
+    </div>
+
+    <script>
+        mermaid.initialize({
+            startOnLoad: true,
+            theme: 'base',
+            flowchart: {
+                useMaxWidth: true,
+                htmlLabels: false,
+                curve: 'basis',
+                padding: 20,
+                nodeSpacing: 40,
+                rankSpacing: 80,
+                wrap: true
+            },
+            themeVariables: {
+                fontSize: '11px',
+                fontFamily: 'Times New Roman, Times, serif',
+                lineColor: '#000000',
+                primaryTextColor: '#000000',
+                background: '#ffffff',
+                mainBkg: '#ffffff',
+                nodeBorder: '#000000',
+                textColor: '#000000'
+            }
+        });
+
+        function downloadSVG() {
+            const svg = document.querySelector('#workflow-diagram svg');
+            if (!svg) {
+                alert('请等待流程图加载完成');
+                return;
+            }
+
+            // 移除不必要的属性
+            const clone = svg.cloneNode(true);
+            clone.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
+
+            const svgData = new XMLSerializer().serializeToString(clone);
+            const blob = new Blob([svgData], {type: 'image/svg+xml;charset=utf-8'});
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = 'workflow_diagram.svg';
+            link.click();
+            URL.revokeObjectURL(url);
+        }
+
+        function downloadPNG() {
+            const svg = document.querySelector('#workflow-diagram svg');
+            if (!svg) {
+                alert('请等待流程图加载完成');
+                return;
+            }
+
+            const svgData = new XMLSerializer().serializeToString(svg);
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+            const img = new Image();
+
+            const svgBlob = new Blob([svgData], {type: 'image/svg+xml;charset=utf-8'});
+            const url = URL.createObjectURL(svgBlob);
+
+            img.onload = function() {
+                // 设置高分辨率（300 DPI）
+                const scale = 3;
+                canvas.width = img.width * scale;
+                canvas.height = img.height * scale;
+                ctx.scale(scale, scale);
+                ctx.drawImage(img, 0, 0);
+                const pngUrl = canvas.toDataURL('image/png');
+                const link = document.createElement('a');
+                link.href = pngUrl;
+                link.download = 'workflow_diagram_300dpi.png';
+                link.click();
+                URL.revokeObjectURL(url);
+            };
+
+            img.src = url;
+        }
+
+        function downloadPDF() {
+            const svg = document.querySelector('#workflow-diagram svg');
+            if (!svg) {
+                alert('请等待流程图加载完成');
+                return;
+            }
+
+            const svgData = new XMLSerializer().serializeToString(svg);
+            const svgBlob = new Blob([svgData], {type: 'image/svg+xml;charset=utf-8'});
+            const url = URL.createObjectURL(svgBlob);
+            window.open(url, '_blank');
+
+            alert('已在新窗口打开 SVG，您可以:\n1. 使用浏览器打印功能 -> 另存为 PDF\n2. 或使用专业工具（如 Inkscape）转换为 PDF');
+        }
+
+        function copyMermaid() {
+            const mermaidCode = document.querySelector('.mermaid').textContent;
+            navigator.clipboard.writeText(mermaidCode).then(() => {
+                alert('✓ Mermaid 代码已复制到剪贴板！');
+            }).catch(err => {
+                alert('复制失败，请手动复制代码');
+            });
+        }
+
+        function copyLatex() {
+            const latexCode = `
+% LaTeX TikZ Workflow Diagram
+% 使用方法: 将以下代码复制到 LaTeX 文档中
+% 需要: \\usepackage{tikz}, \\usepackage{usetikzlibrary}
+
+\\begin{figure}[htbp]
+\\centering
+\\begin{tikzpicture}[
+    node distance=1.2cm and 1.5cm,
+    startstop/.style={circle, draw=black, thick, minimum size=0.8cm},
+    process/.style={rectangle, draw=black, thick, minimum width=2.5cm, minimum height=0.8cm, fill=gray!10},
+    decision/.style={diamond, draw=black, thick, aspect=1.5, minimum width=1.5cm, minimum height=0.6cm},
+    knowledge/.style={rectangle, draw=black, thick, minimum width=2.5cm, minimum height=0.8cm, fill=blue!10},
+    ai/.style={rectangle, draw=black, thick, minimum width=2.5cm, minimum height=0.8cm, fill=purple!10},
+    arrow/.style={->, >=stealth, thick}
+]
+
+    % 节点
+    \\node[startstop] (start) {开始};
+    \\node[process, below of=start] (init) {初始化智能体};
+    \\node[decision, below of=init] (split1) {检索阶段};
+    \\node[knowledge, below left of=split1, xshift=-1cm] (knode) {知识库检索};
+    \\node[knowledge, below right of=split1, xshift=1cm] (hnode) {记忆库检索};
+    \\node[decision, below of=split1, yshift=-2.5cm] (merge1) {汇合};
+    \\node[ai, below of=merge1] (pnode) {需求解析};
+    \\node[process, below of=pnode] (dnode) {确定工具调用};
+    \\node[decision, below of=dnode] (split2) {分析阶段};
+    \\node[ai, below left of=split2, xshift=-1cm] (cnode) {Compartment分析};
+    \\node[ai, below of=split2, yshift=-2cm] (gnode) {通用数据分析};
+    \\node[ai, below right of=split2, xshift=1cm] (tnode) {TAD分析};
+    \\node[decision, below of=split2, yshift=-3.5cm] (merge2) {汇合};
+    \\node[ai, below of=merge2] (rnode) {结果分析};
+    \\node[ai, below of=rnode] (conode) {生成初步结论};
+    \\node[ai, below of=conode] (cnode2) {结论检查};
+    \\node[knowledge, below of=cnode2] (snode) {保存结论};
+    \\node[startstop, below of=snode] (end) {结束};
+
+    % 连接线
+    \\draw[arrow] (start) -- (init);
+    \\draw[arrow] (init) -- (split1);
+    \\draw[arrow] (split1) -- (knode);
+    \\draw[arrow] (split1) -- (hnode);
+    \\draw[arrow] (knode) -- (merge1);
+    \\draw[arrow] (hnode) -- (merge1);
+    \\draw[arrow] (split1) -- (merge1);
+    \\draw[arrow] (merge1) -- (pnode);
+    \\draw[arrow] (pnode) -- (dnode);
+    \\draw[arrow] (dnode) -- (split2);
+    \\draw[arrow] (split2) -- (cnode);
+    \\draw[arrow] (split2) -- (gnode);
+    \\draw[arrow] (split2) -- (tnode);
+    \\draw[arrow] (cnode) -- (merge2);
+    \\draw[arrow] (gnode) -- (merge2);
+    \\draw[arrow] (tnode) -- (merge2);
+    \\draw[arrow] (split2) -- (merge2);
+    \\draw[arrow] (merge2) -- (rnode);
+    \\draw[arrow] (rnode) -- (conode);
+    \\draw[arrow] (conode) -- (cnode2);
+    \\draw[arrow] (cnode2) -- (snode);
+    \\draw[arrow] (snode) -- (end);
+
+\\end{tikzpicture}
+\\caption{Workflow of the 3D genome analysis agent.}
+\\label{fig:workflow}
+\\end{figure}
+            `.trim();
+
+            navigator.clipboard.writeText(latexCode).then(() => {
+                alert('✓ LaTeX TikZ 代码已复制到剪贴板！\n\n可以粘贴到 LaTeX 文档中使用。');
+            }).catch(err => {
+                alert('复制失败，请手动复制代码');
+            });
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,26 @@
+{
+  "name": "coze-api-proxy-server",
+  "version": "1.0.0",
+  "description": "Coze API 代理服务器 - 解决 CORS 跨域问题",
+  "main": "proxy_server.js",
+  "scripts": {
+    "start": "node proxy_server.js",
+    "dev": "nodemon proxy_server.js"
+  },
+  "keywords": [
+    "coze",
+    "api",
+    "proxy",
+    "cors"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.18.2",
+    "cors": "^2.8.5",
+    "axios": "^1.6.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.1"
+  }
+}

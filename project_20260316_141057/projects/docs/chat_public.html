@@ -1,0 +1,671 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>三维基因组分析智能体 - 公开版</title>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            background: white;
+            border-radius: 24px;
+            box-shadow: 0 25px 80px rgba(0, 0, 0, 0.35);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            height: 95vh;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 18px 25px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        .header h1 {
+            font-size: 20px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            letter-spacing: 0.5px;
+        }
+
+        .header .status {
+            font-size: 13px;
+            padding: 8px 16px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 20px;
+            font-weight: 500;
+            backdrop-filter: blur(10px);
+        }
+
+        .header .status.online {
+            background: rgba(40, 167, 69, 0.4);
+            color: #fff;
+            box-shadow: 0 2px 8px rgba(40, 167, 69, 0.3);
+        }
+
+        .header .status.offline {
+            background: rgba(220, 53, 69, 0.4);
+            color: #fff;
+        }
+
+        .info-banner {
+            background: linear-gradient(135deg, #fff3cd 0%, #ffe69c 100%);
+            border-left: 4px solid #ffc107;
+            padding: 15px 25px;
+            font-size: 14px;
+            color: #856404;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        .info-banner strong {
+            font-weight: 700;
+            margin-right: 8px;
+        }
+
+        .chat-container {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px 25px;
+            background: linear-gradient(180deg, #f8f9fa 0%, #f1f3f5 100%);
+        }
+
+        .chat-container::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .chat-container::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .chat-container::-webkit-scrollbar-thumb {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 4px;
+        }
+
+        .message {
+            margin-bottom: 24px;
+            display: flex;
+            gap: 16px;
+            animation: fadeIn 0.4s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(15px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .message.user {
+            flex-direction: row-reverse;
+        }
+
+        .avatar {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            flex-shrink: 0;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .avatar.ai {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .avatar.user {
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+            color: white;
+        }
+
+        .message-content {
+            max-width: 85%;
+            padding: 18px 22px;
+            border-radius: 16px;
+            font-size: 15px;
+            line-height: 1.8;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        }
+
+        .message.ai .message-content {
+            background: white;
+            border: 2px solid #e9ecef;
+            border-top-left-radius: 4px;
+        }
+
+        .message.user .message-content {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-top-right-radius: 4px;
+        }
+
+        .message-content pre {
+            background: linear-gradient(135deg, #1e1e2e 0%, #2d2d3f 100%);
+            color: #e2e8f0;
+            padding: 20px;
+            border-radius: 12px;
+            overflow-x: auto;
+            margin: 15px 0;
+            font-family: 'Fira Code', 'Courier New', monospace;
+            font-size: 13px;
+            line-height: 1.6;
+            border: 1px solid #3d3d4d;
+            box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.3);
+        }
+
+        .message-content code {
+            background: linear-gradient(135deg, #2d2d3f 0%, #3d3d4d 100%);
+            color: #e2e8f0;
+            padding: 3px 8px;
+            border-radius: 6px;
+            font-family: 'Fira Code', 'Courier New', monospace;
+            font-size: 13px;
+            border: 1px solid #3d3d4d;
+        }
+
+        .message-content table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+            font-size: 14px;
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        }
+
+        .message-content th,
+        .message-content td {
+            padding: 12px 16px;
+            text-align: left;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        .message-content th {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 13px;
+            letter-spacing: 0.5px;
+        }
+
+        .message-content tr:hover td {
+            background: #f8f9fa;
+        }
+
+        .message-content h2,
+        .message-content h3,
+        .message-content h4 {
+            color: #667eea;
+            font-weight: 700;
+            margin: 18px 0 12px 0;
+        }
+
+        .message-content h2 {
+            font-size: 20px;
+        }
+
+        .message-content h3 {
+            font-size: 18px;
+        }
+
+        .message-content h4 {
+            font-size: 16px;
+        }
+
+        .message-content strong {
+            color: #764ba2;
+            font-weight: 600;
+        }
+
+        .message-content ul,
+        .message-content ol {
+            margin: 12px 0;
+            padding-left: 24px;
+        }
+
+        .message-content li {
+            margin: 8px 0;
+            line-height: 1.7;
+        }
+
+        .input-container {
+            padding: 18px 25px;
+            background: white;
+            border-top: 2px solid #e9ecef;
+            display: flex;
+            gap: 12px;
+        }
+
+        .input-container input {
+            flex: 1;
+            padding: 14px 18px;
+            border: 2px solid #dee2e6;
+            border-radius: 12px;
+            font-size: 15px;
+            transition: all 0.3s;
+            background: #f8f9fa;
+        }
+
+        .input-container input:focus {
+            outline: none;
+            border-color: #667eea;
+            background: white;
+            box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
+        }
+
+        .input-container button {
+            padding: 14px 32px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+        }
+
+        .input-container button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(102, 126, 234, 0.4);
+        }
+
+        .input-container button:active {
+            transform: translateY(0);
+        }
+
+        .input-container button:disabled {
+            background: #adb5bd;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .examples {
+            padding: 10px 25px;
+            background: linear-gradient(180deg, #f8f9fa 0%, #ffffff 100%);
+            border-top: 1px solid #e9ecef;
+        }
+
+        .examples h3 {
+            font-size: 11px;
+            color: #495057;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+
+        .example-buttons {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .example-btn {
+            padding: 6px 12px;
+            background: white;
+            border: 2px solid #dee2e6;
+            border-radius: 18px;
+            font-size: 12px;
+            color: #667eea;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: 500;
+        }
+
+        .example-btn:hover {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-color: #667eea;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+        }
+
+        .example-btn:active {
+            transform: translateY(0);
+        }
+
+        .typing-indicator {
+            display: flex;
+            gap: 6px;
+            padding: 16px 20px;
+        }
+
+        .typing-indicator span {
+            width: 10px;
+            height: 10px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 50%;
+            animation: typing 1.4s infinite ease-in-out;
+            box-shadow: 0 2px 6px rgba(102, 126, 234, 0.3);
+        }
+
+        .typing-indicator span:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+
+        .typing-indicator span:nth-child(3) {
+            animation-delay: 0.4s;
+        }
+
+        @keyframes typing {
+            0%, 60%, 100% { transform: translateY(0); opacity: 0.5; }
+            30% { transform: translateY(-12px); opacity: 1; }
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                height: 100vh;
+                border-radius: 0;
+                max-width: 100%;
+            }
+
+            .header {
+                padding: 15px 18px;
+            }
+
+            .header h1 {
+                font-size: 18px;
+            }
+
+            .message-content {
+                max-width: 90%;
+            }
+
+            .avatar {
+                width: 40px;
+                height: 40px;
+                font-size: 20px;
+            }
+
+            .chat-container,
+            .input-container,
+            .examples,
+            .info-banner {
+                padding-left: 18px;
+                padding-right: 18px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🧬 三维基因组分析智能体</h1>
+            <div class="status offline" id="status">● 未连接</div>
+        </div>
+
+        <div class="info-banner">
+            <strong>💡 提示：</strong>此智能体已配置为公开访问，无需 Token 即可直接使用。如果遇到访问问题，请联系管理员。
+        </div>
+
+        <div class="chat-container" id="chatContainer">
+            <div class="message ai">
+                <div class="avatar ai">🤖</div>
+                <div class="message-content">
+                    <p>您好！我是三维基因组分析智能体，我可以帮您：</p>
+                    <ul style="margin-left: 20px; margin-top: 10px;">
+                        <li>分析 mcool 文件的 TAD 结构</li>
+                        <li>进行 Compartment 分析</li>
+                        <li>检索相关文献知识</li>
+                        <li>查询历史分析记录</li>
+                    </ul>
+                    <p style="margin-top: 10px;">请直接发送您的问题，我会立即为您解答！</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="examples">
+            <h3>💡 示例问题（点击快速发送）:</h3>
+            <div class="example-buttons">
+                <button class="example-btn" onclick="sendExample('分析 assets/demo_chr1.mcool 文件中 chr1 染色体的 TAD 结构')">分析 TAD 结构</button>
+                <button class="example-btn" onclick="sendExample('分析 demo_chr1.mcool 中 chr1 的 A/B compartments')">分析 Compartments</button>
+                <button class="example-btn" onclick="sendExample('搜索关于 TAD 分析的最新研究文献')">搜索文献</button>
+                <button class="example-btn" onclick="sendExample('列出 demo_chr1.mcool 支持的所有分辨率')">列出分辨率</button>
+            </div>
+        </div>
+
+        <div class="input-container">
+            <input type="text" id="userInput" placeholder="输入您的问题..." onkeypress="handleKeyPress(event)">
+            <button id="sendBtn" onclick="sendMessage()">发送</button>
+        </div>
+    </div>
+
+    <script>
+        // Coze 公开访问地址 - 请替换为您的实际公开地址
+        const COZE_PUBLIC_URL = 'https://gsn2v3kydv.coze.site';
+
+        let isConnected = false;
+
+        // 页面加载时测试连接
+        window.addEventListener('load', async () => {
+            await testConnection();
+        });
+
+        async function testConnection() {
+            const statusEl = document.getElementById('status');
+            const sendBtn = document.getElementById('sendBtn');
+
+            statusEl.textContent = '● 连接中...';
+            statusEl.className = 'status offline';
+
+            try {
+                // 尝试发送一个简单的测试请求
+                const response = await fetch(`${COZE_PUBLIC_URL}/run`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        messages: [
+                            {
+                                role: 'user',
+                                content: 'hello'
+                            }
+                        ]
+                    })
+                });
+
+                if (response.ok) {
+                    isConnected = true;
+                    statusEl.textContent = '● 已连接';
+                    statusEl.className = 'status online';
+                    sendBtn.disabled = false;
+                    addMessage('系统', '✅ 连接成功！可以开始对话了。', 'ai');
+                } else {
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                }
+            } catch (error) {
+                isConnected = false;
+                statusEl.textContent = '● 连接失败';
+                statusEl.className = 'status offline';
+                sendBtn.disabled = true;
+
+                let errorMsg = `❌ 连接失败：${error.message}`;
+
+                if (error.message.includes('Failed to fetch') || error.message.includes('CORS')) {
+                    errorMsg += '\n\n⚠️ 可能的原因：\n1. 智能体未配置公开访问\n2. 需要管理员配置 CORS\n3. 请联系管理员检查配置';
+                }
+
+                addMessage('系统', errorMsg, 'ai');
+            }
+        }
+
+        function handleKeyPress(event) {
+            if (event.key === 'Enter') {
+                sendMessage();
+            }
+        }
+
+        function sendExample(text) {
+            if (!isConnected) {
+                alert('请等待连接成功后再发送消息');
+                return;
+            }
+            document.getElementById('userInput').value = text;
+            sendMessage();
+        }
+
+        async function sendMessage() {
+            const input = document.getElementById('userInput');
+            const message = input.value.trim();
+
+            if (!message || !isConnected) {
+                return;
+            }
+
+            // 显示用户消息
+            addMessage('您', message, 'user');
+            input.value = '';
+
+            // 显示加载动画
+            const loadingDiv = document.createElement('div');
+            loadingDiv.className = 'message ai';
+            loadingDiv.id = 'loadingMessage';
+            loadingDiv.innerHTML = `
+                <div class="avatar ai">🤖</div>
+                <div class="message-content">
+                    <div class="typing-indicator">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                    </div>
+                </div>
+            `;
+            document.getElementById('chatContainer').appendChild(loadingDiv);
+            scrollToBottom();
+
+            try {
+                const response = await fetch(`${COZE_PUBLIC_URL}/run`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        messages: [
+                            {
+                                role: 'user',
+                                content: message
+                            }
+                        ]
+                    })
+                });
+
+                const data = await response.json();
+
+                // 移除加载动画
+                const loadingEl = document.getElementById('loadingMessage');
+                if (loadingEl) {
+                    loadingEl.remove();
+                }
+
+                if (response.ok) {
+                    // 显示 AI 回复
+                    const assistantMessage = data.messages?.[data.messages.length - 1]?.content;
+                    if (assistantMessage) {
+                        addMessage('智能体', assistantMessage, 'ai');
+                    }
+                } else {
+                    addMessage('系统', `❌ 错误：${JSON.stringify(data.detail || data)}`, 'ai');
+                }
+            } catch (error) {
+                // 移除加载动画
+                const loadingEl = document.getElementById('loadingMessage');
+                if (loadingEl) {
+                    loadingEl.remove();
+                }
+                addMessage('系统', `❌ 请求失败：${error.message}`, 'ai');
+            }
+        }
+
+        function addMessage(sender, content, type) {
+            const chatContainer = document.getElementById('chatContainer');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${type}`;
+
+            const avatar = type === 'ai' ? '🤖' : '👤';
+
+            // 处理 Markdown 格式
+            const formattedContent = formatMessage(content);
+
+            messageDiv.innerHTML = `
+                <div class="avatar ${type}">${avatar}</div>
+                <div class="message-content">${formattedContent}</div>
+            `;
+
+            chatContainer.appendChild(messageDiv);
+            scrollToBottom();
+
+            // 渲染 Mermaid 图表
+            setTimeout(() => {
+                mermaid.init(undefined, messageDiv.querySelectorAll('.mermaid'));
+            }, 100);
+        }
+
+        function formatMessage(content) {
+            if (!content) return '';
+
+            // 简单的 Markdown 解析
+            let formatted = content
+                // 代码块
+                .replace(/```(\w+)?\n([\s\S]*?)```/g, '<pre><code>$2</code></pre>')
+                // 行内代码
+                .replace(/`([^`]+)`/g, '<code>$1</code>')
+                // 标题
+                .replace(/^### (.*$)/gm, '<h4>$1</h4>')
+                .replace(/^## (.*$)/gm, '<h3>$1</h3>')
+                .replace(/^# (.*$)/gm, '<h2>$1</h2>')
+                // 粗体
+                .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+                // 斜体
+                .replace(/\*(.*?)\*/g, '<em>$1</em>')
+                // 表格
+                .replace(/\|(.+)\|/g, function(match) {
+                    const cells = match.split('|').filter(cell => cell.trim());
+                    return '<tr>' + cells.map(cell => `<td>${cell.trim()}</td>`).join('') + '</tr>';
+                })
+                // 列表
+                .replace(/^- (.*$)/gm, '<li>$1</li>')
+                .replace(/(\n<li>.*<\/li>)+/g, '<ul>$&</ul>')
+                // 换行
+                .replace(/\n/g, '<br>');
+
+            return formatted;
+        }
+
+        function scrollToBottom() {
+            const chatContainer = document.getElementById('chatContainer');
+            chatContainer.scrollTop = chatContainer.scrollHeight;
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>三维基因组分析智能体</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 600px;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            padding: 40px;
+        }
+
+        .logo {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .logo h1 {
+            font-size: 28px;
+            font-weight: 600;
+            color: #667eea;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .features {
+            margin-bottom: 30px;
+        }
+
+        .features h2 {
+            font-size: 16px;
+            color: #666;
+            margin-bottom: 15px;
+        }
+
+        .features ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .features li {
+            padding: 8px 0;
+            padding-left: 25px;
+            position: relative;
+            color: #555;
+            font-size: 14px;
+        }
+
+        .features li:before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: #667eea;
+            font-weight: bold;
+        }
+
+        .api-key-section {
+            margin-bottom: 20px;
+            display: none;
+        }
+
+        .api-key-section.visible {
+            display: block;
+        }
+
+        .api-key-section label {
+            display: block;
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 8px;
+        }
+
+        .api-key-section .input-group {
+            display: flex;
+            gap: 10px;
+        }
+
+        .api-key-section input {
+            flex: 1;
+            padding: 10px 12px;
+            border: 1px solid #ced4da;
+            border-radius: 8px;
+            font-size: 14px;
+        }
+
+        .api-key-section button {
+            padding: 10px 20px;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .api-key-section button:hover {
+            background: #5568d3;
+        }
+
+        .start-button {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .start-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+        }
+
+        .start-button:disabled {
+            background: #6c757d;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .status {
+            margin-top: 20px;
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 13px;
+            text-align: center;
+            display: none;
+        }
+
+        .status.visible {
+            display: block;
+        }
+
+        .status.info {
+            background: #e3f2fd;
+            color: #1565C0;
+        }
+
+        .status.success {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .status.error {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .loading {
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            border: 2px solid #f3f3f3;
+            border-top: 2px solid #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-right: 8px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 12px;
+            color: #999;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="logo">
+            <h1>🧬 三维基因组分析智能体</h1>
+        </div>
+
+        <div class="features">
+            <h2>✨ 功能特性</h2>
+            <ul>
+                <li>分析 mcool 文件的 TAD 结构</li>
+                <li>进行 Compartment 分析</li>
+                <li>检索相关文献知识</li>
+                <li>查询历史分析记录</li>
+            </ul>
+        </div>
+
+        <div class="api-key-section" id="apiKeySection">
+            <label for="apiKey">🔑 API Key（可选）</label>
+            <div class="input-group">
+                <input type="password" id="apiKey" placeholder="如果需要认证，请输入 API Key">
+                <button onclick="toggleApiKeyVisibility()">显示</button>
+            </div>
+        </div>
+
+        <button class="start-button" id="startBtn" onclick="startChat()">
+            开始使用
+        </button>
+
+        <div class="status" id="status"></div>
+
+        <div class="footer">
+            基于 LangChain 和 LangGraph 构建
+        </div>
+    </div>
+
+    <script>
+        let baseUrl = window.location.origin;
+        let apiKey = '';
+
+        // 从 localStorage 加载保存的 API Key
+        const savedKey = localStorage.getItem('apiKey');
+        if (savedKey) {
+            document.getElementById('apiKey').value = savedKey;
+        }
+
+        function toggleApiKeyVisibility() {
+            const input = document.getElementById('apiKey');
+            const btn = event.target;
+            input.type = input.type === 'password' ? 'text' : 'password';
+            btn.textContent = input.type === 'password' ? '显示' : '隐藏';
+        }
+
+        function showStatus(message, type = 'info', loading = false) {
+            const statusEl = document.getElementById('status');
+            statusEl.className = `status visible ${type}`;
+
+            let html = '';
+            if (loading) {
+                html += '<span class="loading"></span>';
+            }
+            html += message;
+            statusEl.innerHTML = html;
+        }
+
+        function hideStatus() {
+            const statusEl = document.getElementById('status');
+            statusEl.className = 'status';
+        }
+
+        async function testConnection(useApiKey = false) {
+            const headers = {
+                'Content-Type': 'application/json'
+            };
+
+            if (useApiKey && apiKey) {
+                headers['Authorization'] = `Bearer ${apiKey}`;
+            }
+
+            try {
+                const response = await fetch(`${baseUrl}/health`, { headers });
+                return response.ok;
+            } catch (error) {
+                return false;
+            }
+        }
+
+        async function startChat() {
+            const btn = document.getElementById('startBtn');
+            const apiKeyInput = document.getElementById('apiKey');
+
+            apiKey = apiKeyInput.value.trim();
+
+            // 禁用按钮
+            btn.disabled = true;
+            showStatus('正在连接服务...', 'info', true);
+
+            // 第一步：尝试不带 Token 连接
+            const noTokenSuccess = await testConnection(false);
+
+            if (noTokenSuccess) {
+                // 不需要 Token，直接跳转
+                showStatus('连接成功！正在跳转...', 'success', true);
+                localStorage.setItem('apiKey', '');
+                setTimeout(() => {
+                    window.location.href = '/chat';
+                }, 1000);
+                return;
+            }
+
+            // 不带 Token 失败，检查是否有 API Key
+            if (!apiKey) {
+                hideStatus();
+                document.getElementById('apiKeySection').classList.add('visible');
+                btn.disabled = false;
+                showStatus('服务需要 API Key 认证，请输入后重试', 'error');
+                return;
+            }
+
+            // 尝试带 Token 连接
+            const withTokenSuccess = await testConnection(true);
+
+            if (withTokenSuccess) {
+                showStatus('连接成功！正在跳转...', 'success', true);
+                localStorage.setItem('apiKey', apiKey);
+                setTimeout(() => {
+                    window.location.href = `/chat?token=${encodeURIComponent(apiKey)}`;
+                }, 1000);
+            } else {
+                hideStatus();
+                btn.disabled = false;
+                showStatus('连接失败，请检查 API Key 是否正确', 'error');
+            }
+        }
+
+        // 页面加载时自动测试连接
+        window.addEventListener('load', async function() {
+            const btn = document.getElementById('startBtn');
+
+            try {
+                showStatus('正在检测服务配置...', 'info', true);
+
+                // 测试是否需要认证
+                const needsAuth = !await testConnection(false);
+
+                if (needsAuth) {
+                    // 需要认证
+                    const savedKey = localStorage.getItem('apiKey');
+                    if (savedKey) {
+                        // 有保存的 Key，测试是否有效
+                        const isValid = await testConnection(true);
+                        if (isValid) {
+                            hideStatus();
+                            setTimeout(() => {
+                                window.location.href = `/chat?token=${encodeURIComponent(savedKey)}`;
+                            }, 500);
+                            return;
+                        }
+                    }
+                    // 需要认证且没有有效 Key，显示输入框
+                    document.getElementById('apiKeySection').classList.add('visible');
+                    hideStatus();
+                } else {
+                    // 不需要认证，直接跳转
+                    hideStatus();
+                    setTimeout(() => {
+                        window.location.href = '/chat';
+                    }, 500);
+                }
+            } catch (error) {
+                hideStatus();
+                btn.disabled = false;
+                showStatus('无法连接到服务，请稍后重试', 'error');
+            }
+        });
+    </script>
+</body>
+</html>

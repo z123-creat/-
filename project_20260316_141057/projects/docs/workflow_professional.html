@@ -1,0 +1,552 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>工作流流程图 - 专业论文版</title>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Times New Roman', Times, serif;
+            background: #ffffff;
+            min-height: 100vh;
+            padding: 40px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .paper-container {
+            max-width: 900px;
+            width: 100%;
+            background: white;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+
+        .header-section {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px 40px;
+            text-align: center;
+        }
+
+        .header-section h1 {
+            font-size: 22px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            letter-spacing: 0.5px;
+        }
+
+        .header-section p {
+            font-size: 13px;
+            opacity: 0.9;
+            line-height: 1.5;
+        }
+
+        .diagram-section {
+            padding: 40px;
+        }
+
+        .diagram-container {
+            background: white;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            padding: 30px;
+            margin: 20px 0;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+        }
+
+        .phase-legend {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-top: 20px;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 6px;
+            font-size: 11px;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .legend-color {
+            width: 16px;
+            height: 16px;
+            border-radius: 3px;
+            border: 1px solid rgba(0,0,0,0.1);
+        }
+
+        .legend-color.blue { background: #e3f2fd; border-color: #2196F3; }
+        .legend-color.purple { background: #f3e5f5; border-color: #9C27B0; }
+        .legend-color.gray { background: #f5f5f5; border-color: #757575; }
+
+        .figure-caption {
+            font-size: 12px;
+            color: #444;
+            margin-top: 20px;
+            text-align: justify;
+            line-height: 1.7;
+            padding: 15px;
+            background: #fafafa;
+            border-left: 3px solid #667eea;
+            border-radius: 0 4px 4px 0;
+        }
+
+        .figure-caption strong {
+            color: #667eea;
+            font-weight: bold;
+        }
+
+        .download-section {
+            margin-top: 30px;
+            padding: 25px;
+            background: linear-gradient(to right, #f8f9fa, #ffffff);
+            border-top: 2px solid #667eea;
+        }
+
+        .download-section h3 {
+            font-size: 14px;
+            font-weight: bold;
+            margin-bottom: 15px;
+            color: #333;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .download-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .download-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 10px 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+            font-size: 12px;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+            box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
+        }
+
+        .download-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+        }
+
+        .download-btn svg {
+            width: 14px;
+            height: 14px;
+            fill: currentColor;
+        }
+
+        .note {
+            font-size: 11px;
+            color: #666;
+            margin-top: 15px;
+            padding: 12px;
+            background: white;
+            border-left: 3px solid #9C27B0;
+            border-radius: 4px;
+            line-height: 1.6;
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .info-card {
+            padding: 15px;
+            background: white;
+            border: 1px solid #e9ecef;
+            border-radius: 6px;
+        }
+
+        .info-card h4 {
+            font-size: 12px;
+            font-weight: bold;
+            color: #667eea;
+            margin-bottom: 8px;
+        }
+
+        .info-card ul {
+            list-style: none;
+            font-size: 11px;
+            color: #555;
+            line-height: 1.6;
+        }
+
+        .info-card ul li {
+            padding: 2px 0;
+            padding-left: 12px;
+            position: relative;
+        }
+
+        .info-card ul li::before {
+            content: "•";
+            position: absolute;
+            left: 0;
+            color: #667eea;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 2px 8px;
+            background: #667eea;
+            color: white;
+            font-size: 9px;
+            border-radius: 10px;
+            margin-left: 8px;
+            vertical-align: middle;
+        }
+    </style>
+</head>
+<body>
+    <div class="paper-container">
+        <div class="header-section">
+            <h1>Workflow Diagram for 3D Genome Analysis Agent</h1>
+            <p>
+                A comprehensive framework integrating knowledge retrieval, data analysis, and AI-powered processing
+                for mcool file analysis with TAD and Compartment detection
+            </p>
+        </div>
+
+        <div class="diagram-section">
+            <div class="diagram-container">
+                <div id="workflow-diagram">
+                    <pre class="mermaid">
+                    flowchart TB
+                        Start([开始]):::startend
+
+                        Start --> Init[初始化智能体]:::init
+
+                        Init --> Split1{检索阶段}:::phase1
+
+                        Split1 --> Knode[知识库检索]:::knowledge
+                        Split1 --> Hnode[记忆库检索]:::knowledge
+
+                        Knode --> Merge1{汇合}:::phase1
+                        Hnode --> Merge1
+
+                        Merge1 --> Pnode[需求解析]:::ai
+
+                        Pnode --> Dnode[确定工具调用]:::process
+
+                        Dnode --> Split2{分析阶段}:::phase2
+
+                        Split2 --> Cnode[Compartment分析]:::ai
+                        Split2 --> Gnode[通用数据分析]:::ai
+                        Split2 --> Tnode[TAD分析]:::ai
+
+                        Cnode --> Merge2{汇合}:::phase2
+                        Gnode --> Merge2
+                        Tnode --> Merge2
+
+                        Merge2 --> Rnode[结果分析]:::ai
+
+                        Rnode --> Conode[生成初步结论]:::ai
+
+                        Conode --> Cnode2[结论检查]:::ai
+
+                        Cnode2 --> Snode[保存结论]:::knowledge
+
+                        Snode --> End([结束]):::startend
+
+                        %% 专业配色方案
+                        classDef startend fill:#ffffff,stroke:#667eea,stroke-width:2.5px,color:#333
+                        classDef init fill:#f8f9fa,stroke:#757575,stroke-width:1.5px,color:#333
+                        classDef process fill:#f5f5f5,stroke:#757575,stroke-width:1.5px,color:#333
+                        classDef knowledge fill:#e3f2fd,stroke:#2196F3,stroke-width:1.5px,color:#333
+                        classDef ai fill:#f3e5f5,stroke:#9C27B0,stroke-width:1.5px,color:#333
+                        classDef phase1 fill:#e3f2fd,stroke:#2196F3,stroke-width:2px,color:#333
+                        classDef phase2 fill:#f3e5f5,stroke:#9C27B0,stroke-width:2px,color:#333
+
+                        %% 连接线样式
+                        linkStyle default stroke:#666666,stroke-width:1px,color:#333
+                    </pre>
+                </div>
+
+                <div class="phase-legend">
+                    <div class="legend-item">
+                        <div class="legend-color blue"></div>
+                        <span>检索阶段 (Retrieval Phase)</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color purple"></div>
+                        <span>分析阶段 (Analysis Phase)</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color gray"></div>
+                        <span>通用操作 (General Operations)</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="figure-caption">
+                <strong>Figure 1.</strong> Workflow of the 3D genome analysis agent. The system is built upon LangChain and LangGraph frameworks, orchestrating 10 specialized tools to achieve end-to-end automated analysis of mcool files. The workflow comprises four principal stages: (i) knowledge retrieval from literature database and historical records, (ii) requirement parsing and tool selection, (iii) parallel execution of Compartment analysis, TAD analysis, and general data processing, and (iv) result synthesis, validation, and persistent storage. Blue nodes represent data retrieval and storage operations, purple nodes indicate AI-driven analytical tasks, and diamond-shaped nodes denote control flow branching and synchronization points.
+            </div>
+        </div>
+
+        <div class="download-section">
+            <h3>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                    <polyline points="7 10 12 15 17 10"></polyline>
+                    <line x1="12" y1="15" x2="12" y2="3"></line>
+                </svg>
+                Export Options for Publication
+            </h3>
+
+            <div class="download-buttons">
+                <button class="download-btn" onclick="downloadSVG()">
+                    <svg viewBox="0 0 24 24">
+                        <path d="M5,20H19V18H5M19,9H15V3H9V9H5L12,16L19,9Z"/>
+                    </svg>
+                    Download SVG <span class="badge">Vector</span>
+                </button>
+                <button class="download-btn" onclick="downloadPNG()">
+                    <svg viewBox="0 0 24 24">
+                        <path d="M5,20H19V18H5M19,9H15V3H9V9H5L12,16L19,9Z"/>
+                    </svg>
+                    Download PNG <span class="badge">300 DPI</span>
+                </button>
+                <button class="download-btn" onclick="downloadPNG600()">
+                    <svg viewBox="0 0 24 24">
+                        <path d="M5,20H19V18H5M19,9H15V3H9V9H5L12,16L19,9Z"/>
+                    </svg>
+                    Download PNG <span class="badge">600 DPI</span>
+                </button>
+                <button class="download-btn" onclick="copyMermaid()">
+                    <svg viewBox="0 0 24 24">
+                        <path d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"/>
+                    </svg>
+                    Copy Mermaid
+                </button>
+                <button class="download-btn" onclick="copyLatex()">
+                    <svg viewBox="0 0 24 24">
+                        <path d="M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2M15.8,20H14L12,16.6L10,20H8.2L11.1,15.5L8.2,11H10L12,14.4L14,11H15.8L12.9,15.5L15.8,20M13,9V3.5L18.5,9H13Z"/>
+                    </svg>
+                    Copy LaTeX TikZ
+                </button>
+            </div>
+
+            <div class="note">
+                <strong>Publication Guidelines:</strong><br>
+                • SVG format is recommended for journals that accept vector graphics (unlimited scalability)<br>
+                • PNG 300 DPI meets the minimum resolution requirement for most academic journals<br>
+                • PNG 600 DPI is required for high-quality print publications<br>
+                • LaTeX TikZ code can be directly used in LaTeX documents with full editability<br>
+                • Ensure to check specific journal guidelines for figure formatting requirements
+            </div>
+
+            <div class="info-grid">
+                <div class="info-card">
+                    <h4>📊 Technical Specifications</h4>
+                    <ul>
+                        <li>Framework: LangChain 1.0 + LangGraph</li>
+                        <li>Language: Python 3.12</li>
+                        <li>Tools: 10 specialized instruments</li>
+                        <li>Data Format: mcool (Hi-C contact maps)</li>
+                        <li>Storage: Supabase PostgreSQL</li>
+                    </ul>
+                </div>
+                <div class="info-card">
+                    <h4>🎨 Design Features</h4>
+                    <ul>
+                        <li>Color-coded by functional phase</li>
+                        <li>Academic-style layout and typography</li>
+                        <li>Vector-quality graphics</li>
+                        <li>Scalable to any resolution</li>
+                        <li>Print-optimized design</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        mermaid.initialize({
+            startOnLoad: true,
+            theme: 'base',
+            flowchart: {
+                useMaxWidth: true,
+                htmlLabels: false,
+                curve: 'basis',
+                padding: 18,
+                nodeSpacing: 42,
+                rankSpacing: 75,
+                wrap: true
+            },
+            themeVariables: {
+                fontSize: '11px',
+                fontFamily: 'Times New Roman, Times, serif',
+                lineColor: '#666666',
+                primaryTextColor: '#333333',
+                background: '#ffffff',
+                mainBkg: '#ffffff',
+                nodeBorder: '#333333'
+            }
+        });
+
+        function downloadSVG() {
+            const svg = document.querySelector('#workflow-diagram svg');
+            if (!svg) {
+                alert('Please wait for the diagram to load');
+                return;
+            }
+
+            const clone = svg.cloneNode(true);
+            clone.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
+
+            const svgData = new XMLSerializer().serializeToString(clone);
+            const blob = new Blob([svgData], {type: 'image/svg+xml;charset=utf-8'});
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = 'workflow_diagram_pro.svg';
+            link.click();
+            URL.revokeObjectURL(url);
+        }
+
+        function downloadPNG(dpi = 300) {
+            const svg = document.querySelector('#workflow-diagram svg');
+            if (!svg) {
+                alert('Please wait for the diagram to load');
+                return;
+            }
+
+            const svgData = new XMLSerializer().serializeToString(svg);
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+            const img = new Image();
+
+            const svgBlob = new Blob([svgData], {type: 'image/svg+xml;charset=utf-8'});
+            const url = URL.createObjectURL(svgBlob);
+
+            img.onload = function() {
+                const scale = dpi / 96;
+                canvas.width = img.width * scale;
+                canvas.height = img.height * scale;
+                ctx.scale(scale, scale);
+                ctx.drawImage(img, 0, 0);
+
+                const pngUrl = canvas.toDataURL('image/png');
+                const link = document.createElement('a');
+                link.href = pngUrl;
+                link.download = `workflow_diagram_pro_${dpi}dpi.png`;
+                link.click();
+                URL.revokeObjectURL(url);
+            };
+
+            img.src = url;
+        }
+
+        function downloadPNG600() {
+            downloadPNG(600);
+        }
+
+        function copyMermaid() {
+            const mermaidCode = document.querySelector('.mermaid').textContent;
+            navigator.clipboard.writeText(mermaidCode).then(() => {
+                alert('✓ Mermaid code copied to clipboard!');
+            }).catch(err => {
+                alert('Copy failed, please copy manually');
+            });
+        }
+
+        function copyLatex() {
+            const latexCode = `
+\\begin{figure}[htbp]
+\\centering
+\\begin{tikzpicture}[
+    node distance=1.2cm and 1.5cm,
+    startstop/.style={circle, draw=#667eea, very thick, minimum size=0.8cm, font=\\footnotesize},
+    process/.style={rectangle, draw=#757575, thick, minimum width=2.5cm, minimum height=0.8cm, font=\\footnotesize},
+    knowledge/.style={rectangle, draw=#2196F3, thick, minimum width=2.5cm, minimum height=0.8cm, fill=#e3f2fd, font=\\footnotesize},
+    ai/.style={rectangle, draw=#9C27B0, thick, minimum width=2.5cm, minimum height=0.8cm, fill=#f3e5f5, font=\\footnotesize},
+    decision/.style={diamond, draw=#2196F3, thick, aspect=1.5, minimum width=1.5cm, minimum height=0.6cm, font=\\footnotesize},
+    phase2/.style={diamond, draw=#9C27B0, thick, aspect=1.5, minimum width=1.5cm, minimum height=0.6cm, font=\\footnotesize},
+    arrow/.style={->, >=stealth, thick, draw=#666666}
+]
+
+    % Nodes
+    \\node[startstop] (start) {Start};
+    \\node[process, below of=start] (init) {Initialize Agent};
+    \\node[decision, below of=init] (split1) {Retrieval Phase};
+    \\node[knowledge, below left of=split1, xshift=-1cm] (knode) {Knowledge Retrieval};
+    \\node[knowledge, below right of=split1, xshift=1cm] (hnode) {History Retrieval};
+    \\node[decision, below of=split1, yshift=-2.5cm] (merge1) {Merge};
+    \\node[ai, below of=merge1] (pnode) {Requirement Parsing};
+    \\node[process, below of=pnode] (dnode) {Determine Tools};
+    \\node[phase2, below of=dnode] (split2) {Analysis Phase};
+    \\node[ai, below left of=split2, xshift=-1cm] (cnode) {Compartment Analysis};
+    \\node[ai, below of=split2, yshift=-2cm] (gnode) {General Analysis};
+    \\node[ai, below right of=split2, xshift=1cm] (tnode) {TAD Analysis};
+    \\node[phase2, below of=split2, yshift=-3.5cm] (merge2) {Merge};
+    \\node[ai, below of=merge2] (rnode) {Result Analysis};
+    \\node[ai, below of=rnode] (conode) {Generate Conclusion};
+    \\node[ai, below of=conode] (cnode2) {Validate Conclusion};
+    \\node[knowledge, below of=cnode2] (snode) {Store Result};
+    \\node[startstop, below of=snode] (end) {End};
+
+    % Arrows
+    \\draw[arrow] (start) -- (init);
+    \\draw[arrow] (init) -- (split1);
+    \\draw[arrow] (split1) -- (knode);
+    \\draw[arrow] (split1) -- (hnode);
+    \\draw[arrow] (knode) -- (merge1);
+    \\draw[arrow] (hnode) -- (merge1);
+    \\draw[arrow] (split1) -- (merge1);
+    \\draw[arrow] (merge1) -- (pnode);
+    \\draw[arrow] (pnode) -- (dnode);
+    \\draw[arrow] (dnode) -- (split2);
+    \\draw[arrow] (split2) -- (cnode);
+    \\draw[arrow] (split2) -- (gnode);
+    \\draw[arrow] (split2) -- (tnode);
+    \\draw[arrow] (cnode) -- (merge2);
+    \\draw[arrow] (gnode) -- (merge2);
+    \\draw[arrow] (tnode) -- (merge2);
+    \\draw[arrow] (split2) -- (merge2);
+    \\draw[arrow] (merge2) -- (rnode);
+    \\draw[arrow] (rnode) -- (conode);
+    \\draw[arrow] (conode) -- (cnode2);
+    \\draw[arrow] (cnode2) -- (snode);
+    \\draw[arrow] (snode) -- (end);
+
+\\end{tikzpicture}
+\\caption{Workflow of the 3D genome analysis agent showing the complete pipeline from initialization to result storage.}
+\\label{fig:workflow}
+\\end{figure}
+            `.trim();
+
+            navigator.clipboard.writeText(latexCode).then(() => {
+                alert('✓ LaTeX TikZ code copied to clipboard!\n\nPaste into LaTeX document.');
+            }).catch(err => {
+                alert('Copy failed, please copy manually');
+            });
+        }
+    </script>
+</body>
+</html>

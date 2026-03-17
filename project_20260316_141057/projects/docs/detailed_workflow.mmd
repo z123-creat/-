@@ -1,0 +1,79 @@
+---
+title: 三维基因组分析智能体工作流
+flowchart TD:
+    classDef user fill:#e1f5fe,stroke:#01579b,stroke-width:2px
+    classDef agent fill:#f3e5f5,stroke:#7b1fa2,stroke-width:2px
+    classDef tool fill:#e8f5e9,stroke:#2e7d32,stroke-width:2px
+    classDef data fill:#fff3e0,stroke:#e65100,stroke-width:2px
+    classDef knowledge fill:#fce4ec,stroke:#c2185b,stroke-width:2px
+    classDef db fill:#e0f2f1,stroke:#00695c,stroke-width:2px
+
+    User["用户输入<br/>分析请求"]:::user
+
+    Agent["智能体核心<br/>LangChain Agent"]:::agent
+
+    Subgraph Tools["工具层"]
+        direction TB
+
+        DataRead["数据读取工具"]:::tool
+        Analysis["分析工具"]:::tool
+        Knowledge["知识检索"]:::knowledge
+        History["历史记录"]:::db
+
+        Subgraph DataReadTools["数据读取工具"]
+            ReadMcool["read_mcool_file<br/>读取 mcool 文件"]
+            GetMatrix["get_chromosome_matrix<br/>获取接触矩阵"]
+            ListRes["list_available_resolutions<br/>列出分辨率"]
+        end
+
+        Subgraph AnalysisTools["分析工具"]
+            TAD["analyze_tads<br/>TAD 分析"]
+            Comp["analyze_compartments<br/>Compartment 分析"]
+        end
+
+        Subgraph KnowledgeTools["知识检索"]
+            Search["search_literature<br/>文献搜索"]
+        end
+
+        Subgraph HistoryTools["历史记录"]
+            Save["save_analysis<br/>保存结果"]
+            Query["query_analysis_history<br/>查询历史"]
+        end
+    end
+
+    Subgraph Data["数据层"]
+        McoolFile["mcool 文件<br/>assets/complete_test.mcool"]:::data
+        LiteratureDB["文献知识库<br/>3d_genomics_literature"]:::knowledge
+        HistoryDB["分析历史<br/>analysis_history 表"]:::db
+    end
+
+    Output["输出分析报告<br/>TAD/Compartment 结果"]:::user
+
+    User --> Agent
+    Agent --> DataRead
+    Agent --> Analysis
+    Agent --> Knowledge
+    Agent --> History
+
+    DataRead --> DataReadTools
+    Analysis --> AnalysisTools
+    Knowledge --> KnowledgeTools
+    History --> HistoryTools
+
+    ReadMcool --> McoolFile
+    GetMatrix --> McoolFile
+    ListRes --> McoolFile
+    TAD --> McoolFile
+    Comp --> McoolFile
+    Search --> LiteratureDB
+    Save --> HistoryDB
+    Query --> HistoryDB
+
+    Agent --> Output
+
+    style Tools fill:#f8f9fa,stroke:#6c757d,stroke-width:2px
+    style Data fill:#f8f9fa,stroke:#6c757d,stroke-width:2px
+    style DataReadTools fill:#f8f9fa,stroke:#dee2e6,stroke-width:1px
+    style AnalysisTools fill:#f8f9fa,stroke:#dee2e6,stroke-width:1px
+    style KnowledgeTools fill:#f8f9fa,stroke:#dee2e6,stroke-width:1px
+    style HistoryTools fill:#f8f9fa,stroke:#dee2e6,stroke-width:1px

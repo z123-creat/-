@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>工作流流程图 - 索引</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 50px;
+        }
+
+        .header h1 {
+            font-size: 36px;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            font-size: 18px;
+            opacity: 0.9;
+        }
+
+        .section-title {
+            color: white;
+            font-size: 24px;
+            margin: 40px 0 25px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+            margin-bottom: 30px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 16px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            transition: transform 0.3s, box-shadow 0.3s;
+            cursor: pointer;
+            text-decoration: none;
+            color: inherit;
+            display: block;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .card.featured {
+            border: 3px solid #667eea;
+            position: relative;
+        }
+
+        .card.featured::before {
+            content: '⭐ 推荐';
+            position: absolute;
+            top: -12px;
+            right: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .card.best {
+            border: 3px solid #f39c12;
+            position: relative;
+        }
+
+        .card.best::before {
+            content: '🏆 最佳';
+            position: absolute;
+            top: -12px;
+            right: 20px;
+            background: linear-gradient(135deg, #f39c12 0%, #e67e22 100%);
+            color: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .card-icon {
+            font-size: 48px;
+            margin-bottom: 20px;
+        }
+
+        .card h3 {
+            color: #333;
+            font-size: 20px;
+            margin-bottom: 10px;
+        }
+
+        .card .tag {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 500;
+            margin-bottom: 15px;
+        }
+
+        .tag.recommended {
+            background: #e8f5e9;
+            color: #27ae60;
+        }
+
+        .tag.detailed {
+            background: #e3f2fd;
+            color: #1976d2;
+        }
+
+        .tag.correct {
+            background: #f3e5f5;
+            color: #9b59b6;
+        }
+
+        .tag.journal {
+            background: #fff3cd;
+            color: #f39c12;
+        }
+
+        .tag.pro {
+            background: #d4edda;
+            color: #28a745;
+        }
+
+        .tag.new {
+            background: #f8d7da;
+            color: #dc3545;
+        }
+
+        .card p {
+            color: #666;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        .card .features {
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid #e9ecef;
+            font-size: 12px;
+            color: #666;
+        }
+
+        .card .features span {
+            display: inline-block;
+            background: #f8f9fa;
+            padding: 3px 8px;
+            border-radius: 4px;
+            margin: 2px;
+        }
+
+        .card .note {
+            margin-top: 15px;
+            padding: 10px;
+            background: #fff3cd;
+            border-left: 3px solid #ffc107;
+            font-size: 12px;
+            color: #856404;
+        }
+
+        .footer {
+            text-align: center;
+            color: white;
+            padding: 30px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+        }
+
+        .footer a {
+            color: white;
+            text-decoration: underline;
+        }
+
+        .comparison-table {
+            background: white;
+            border-radius: 16px;
+            padding: 30px;
+            margin-top: 30px;
+            overflow-x: auto;
+        }
+
+        .comparison-table table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+        }
+
+        .comparison-table th,
+        .comparison-table td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        .comparison-table th {
+            background: #f8f9fa;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .comparison-table tr:hover {
+            background: #f8f9fa;
+        }
+
+        .check { color: #27ae60; font-weight: bold; }
+        .cross { color: #e74c3c; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🧬 三维基因组分析智能体</h1>
+            <p>工作流流程图 - 选择您需要的版本</p>
+        </div>
+
+        <!-- 快速链接 -->
+        <div style="background: rgba(255,255,255,0.1); border-radius: 12px; padding: 20px; margin-bottom: 30px; backdrop-filter: blur(10px);">
+            <div style="display: flex; flex-wrap: wrap; gap: 15px; justify-content: center;">
+                <a href="chat.html" style="display: inline-flex; align-items: center; gap: 8px; padding: 12px 24px; background: white; color: #667eea; text-decoration: none; border-radius: 8px; font-weight: 600; transition: transform 0.3s, box-shadow 0.3s;">
+                    💬 网页聊天界面
+                </a>
+                <a href="DEPLOYMENT_GUIDE.md" style="display: inline-flex; align-items: center; gap: 8px; padding: 12px 24px; background: white; color: #667eea; text-decoration: none; border-radius: 8px; font-weight: 600; transition: transform 0.3s, box-shadow 0.3s;">
+                    🚀 部署指南
+                </a>
+                <a href="FAQ.md" style="display: inline-flex; align-items: center; gap: 8px; padding: 12px 24px; background: white; color: #667eea; text-decoration: none; border-radius: 8px; font-weight: 600; transition: transform 0.3s, box-shadow 0.3s;">
+                    ❓ 常见问题
+                </a>
+            </div>
+        </div>
+
+        <!-- 学术论文版本 -->
+        <h2 class="section-title">📚 学术论文版本</h2>
+        <div class="cards">
+            <a href="workflow_journal_bw.html" class="card best">
+                <div class="card-icon">📄</div>
+                <span class="tag journal">🏆 期刊投稿</span>
+                <h3>期刊黑白版</h3>
+                <p>纯黑白配色，符合学术期刊标准，300-600 DPI 高清输出，最适合论文投稿。</p>
+                <div class="features">
+                    <span>⚫ 黑白</span>
+                    <span>📏 300/600 DPI</span>
+                    <span>📝 LaTeX TikZ</span>
+                </div>
+            </a>
+
+            <a href="workflow_professional.html" class="card featured">
+                <div class="card-icon">🎨</div>
+                <span class="tag pro">⭐ 专业版</span>
+                <h3>专业论文版</h3>
+                <p>优雅的渐变配色，层次分明，适合高质量学术发表，支持多种导出格式。</p>
+                <div class="features">
+                    <span>🎨 渐变色</span>
+                    <span>📊 分阶段</span>
+                    <span>🔧 SVG/PNG</span>
+                </div>
+            </a>
+
+            <a href="workflow_academic.html" class="card">
+                <div class="card-icon">📖</div>
+                <span class="tag new">✨ 新增</span>
+                <h3>学术论文版</h3>
+                <p>标准的学术论文风格，包含详细的技术规格和图例说明，适合学位论文。</p>
+                <div class="features">
+                    <span>📋 技术规格</span>
+                    <span>🎯 标准配色</span>
+                    <span>📚 完整图例</span>
+                </div>
+            </a>
+        </div>
+
+        <!-- 演示版本 -->
+        <h2 class="section-title">💻 演示展示版本</h2>
+        <div class="cards">
+            <a href="workflow_v1.html" class="card">
+                <div class="card-icon">✨</div>
+                <span class="tag correct">🎯 正确版</span>
+                <h3>工作流 V1</h3>
+                <p>完全符合参考图片风格，使用菱形分支节点和弧形连接线，最推荐使用。</p>
+                <div class="note">✓ 菱形分支节点<br/>✓ 弧形连接线<br/>✓ 完整界面模拟</div>
+            </a>
+
+            <a href="workflow_correct.html" class="card">
+                <div class="card-icon">🎨</div>
+                <span class="tag recommended">⭐ 推荐</span>
+                <h3>正确风格版</h3>
+                <p>采用菱形分支节点，弧形连接线，符合标准工作流设计规范。</p>
+            </a>
+
+            <a href="workflow_paper.html" class="card">
+                <div class="card-icon">📄</div>
+                <span class="tag detailed">📊 简单版</span>
+                <h3>论文基础版</h3>
+                <p>简洁的论文版本，适合快速查看和理解工作流程。</p>
+            </a>
+        </div>
+
+        <!-- 技术版本 -->
+        <h2 class="section-title">🔧 技术文档版本</h2>
+        <div class="cards">
+            <a href="workflow_final.html" class="card">
+                <div class="card-icon">📋</div>
+                <span class="tag detailed">📊 详细版</span>
+                <h3>最终版</h3>
+                <p>之前创建的版本，使用圆形分支节点，简洁优雅。</p>
+            </a>
+
+            <a href="workflow_detailed.html" class="card">
+                <div class="card-icon">📄</div>
+                <h3>详细版</h3>
+                <p>包含完整的技术栈说明和分类信息，适合技术文档。</p>
+            </a>
+
+            <a href="workflow_diagram.html" class="card">
+                <div class="card-icon">🔄</div>
+                <h3>标准版</h3>
+                <p>标准的 Mermaid 流程图，带有清晰的图例。</p>
+            </a>
+
+            <a href="workflow_simple.html" class="card">
+                <div class="card-icon">✨</div>
+                <h3>简洁版</h3>
+                <p>最小化设计，快速理解流程，移动端友好。</p>
+            </a>
+        </div>
+
+        <!-- 版本对比 -->
+        <h2 class="section-title">📊 版本对比</h2>
+        <div class="comparison-table">
+            <table>
+                <thead>
+                    <tr>
+                        <th>版本</th>
+                        <th>配色</th>
+                        <th>分辨率</th>
+                        <th>导出格式</th>
+                        <th>适用场景</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>期刊黑白版</strong></td>
+                        <td>黑白</td>
+                        <td>300-600 DPI</td>
+                        <td>SVG, PNG, LaTeX</td>
+                        <td>学术期刊投稿</td>
+                    </tr>
+                    <tr>
+                        <td><strong>专业论文版</strong></td>
+                        <td>渐变色</td>
+                        <td>300-600 DPI</td>
+                        <td>SVG, PNG, LaTeX</td>
+                        <td>高质量学术发表</td>
+                    </tr>
+                    <tr>
+                        <td><strong>学术论文版</strong></td>
+                        <td>标准</td>
+                        <td>300 DPI</td>
+                        <td>SVG, PNG, LaTeX</td>
+                        <td>学位论文</td>
+                    </tr>
+                    <tr>
+                        <td><strong>工作流 V1</strong></td>
+                        <td>彩色</td>
+                        <td>屏幕分辨率</td>
+                        <td>HTML</td>
+                        <td>演示展示</td>
+                    </tr>
+                    <tr>
+                        <td><strong>正确风格版</strong></td>
+                        <td>彩色</td>
+                        <td>屏幕分辨率</td>
+                        <td>HTML</td>
+                        <td>演示展示</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="footer">
+            <p>需要帮助？查看 <a href="WORKFLOW_GUIDE.md">使用指南</a> 或 <a href="VERSION_COMPARISON.md">版本对比</a></p>
+            <p style="margin-top: 10px; font-size: 13px; opacity: 0.8;">三维基因组分析智能体 v1.0.0 | 2026-03-09</p>
+        </div>
+    </div>
+</body>
+</html>

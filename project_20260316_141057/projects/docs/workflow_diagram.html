@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>三维基因组分析智能体工作流</title>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+            padding: 40px;
+            max-width: 800px;
+            width: 100%;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            color: #333;
+            font-size: 24px;
+            font-weight: 600;
+        }
+
+        .header p {
+            color: #666;
+            font-size: 14px;
+            margin-top: 8px;
+        }
+
+        .diagram-container {
+            background: #f8f9fa;
+            border-radius: 16px;
+            padding: 40px;
+            border: 1px solid #e9ecef;
+        }
+
+        /* Mermaid 节点样式 */
+        .node rect {
+            fill: #ffffff;
+            stroke: #dee2e6;
+            stroke-width: 1.5px;
+            rx: 10px;
+            ry: 10px;
+        }
+
+        .node circle {
+            fill: #ffffff;
+            stroke: #dee2e6;
+            stroke-width: 1.5px;
+        }
+
+        .node polygon {
+            fill: #ffffff;
+            stroke: #dee2e6;
+            stroke-width: 1.5px;
+        }
+
+        /* 边框样式 */
+        .edgePath .path {
+            stroke: #6c757d;
+            stroke-width: 1.5px;
+        }
+
+        /* 文字样式 */
+        .label {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+
+        .nodeLabel {
+            font-size: 14px;
+            font-weight: 600;
+            fill: #333;
+        }
+
+        .edgeLabel {
+            font-size: 12px;
+            fill: #666;
+        }
+
+        /* 图例 */
+        .legend {
+            margin-top: 30px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 12px;
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 13px;
+            color: #666;
+        }
+
+        .legend-icon {
+            width: 16px;
+            height: 16px;
+            border-radius: 4px;
+        }
+
+        .legend-icon.blue {
+            background: #4a90e2;
+        }
+
+        .legend-icon.purple {
+            background: #9b59b6;
+        }
+
+        .legend-icon.green {
+            background: #27ae60;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🧬 三维基因组分析智能体工作流</h1>
+            <p>基于 LangChain + LangGraph 的多工具协同分析流程</p>
+        </div>
+
+        <div class="diagram-container">
+            <pre class="mermaid">
+            flowchart TD
+                Start([开始]):::startend
+
+                Start --> Init[初始化智能体]:::init
+
+                Init --> Split1(( )):::split
+
+                Split1 --> Knowledge[知识库检索<br/>文献搜索]:::blue
+                Split1 --> History[记忆库检索<br/>历史记录]:::blue
+
+                Knowledge --> Merge1(( )):::split
+                History --> Merge1
+
+                Merge1 --> Parse[需求解析<br/>理解分析意图]:::purple
+
+                Parse --> Determine[确定工具调用<br/>选择合适的工具]:::purple
+
+                Determine --> Split2(( )):::split
+
+                Split2 --> ReadMcool[读取 mcool 文件<br/>获取数据信息]:::green
+                Split2 --> TADAnalysis[TAD 分析<br/>识别拓扑结构域]:::green
+                Split2 --> CompAnalysis[Compartment 分析<br/>识别 A/B 区室]:::green
+
+                ReadMcool --> Merge2(( )):::split
+                TADAnalysis --> Merge2
+                CompAnalysis --> Merge2
+
+                Merge2 --> Integrate[结果整合<br/>汇总分析结果]:::purple
+
+                Integrate --> Verify[结论验证<br/>文献知识库验证]:::purple
+
+                Verify --> Save[保存结论<br/>存储到数据库]:::blue
+
+                Save --> End([结束]):::startend
+
+                classDef startend fill:#ffffff,stroke:#6c757d,stroke-width:2px
+                classDef init fill:#f8f9fa,stroke:#6c757d,stroke-width:1.5px
+                classDef blue fill:#e3f2fd,stroke:#4a90e2,stroke-width:1.5px
+                classDef purple fill:#f3e5f5,stroke:#9b59b6,stroke-width:1.5px
+                classDef green fill:#e8f5e9,stroke:#27ae60,stroke-width:1.5px
+                classDef split fill:#ffffff,stroke:#6c757d,stroke-width:1.5px
+            </pre>
+        </div>
+
+        <div class="legend">
+            <div class="legend-item">
+                <div class="legend-icon blue"></div>
+                <span>数据检索类</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-icon purple"></div>
+                <span>智能分析类</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-icon green"></div>
+                <span>具体工具类</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-icon" style="background: #f8f9fa; border: 1px solid #6c757d;"></div>
+                <span>流程控制</span>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        mermaid.initialize({
+            startOnLoad: true,
+            theme: 'base',
+            flowchart: {
+                useMaxWidth: true,
+                htmlLabels: true,
+                curve: 'basis',
+                padding: 10,
+                nodeSpacing: 25,
+                rankSpacing: 50
+            },
+            themeVariables: {
+                fontSize: '14px',
+                fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
+                primaryColor: '#e3f2fd',
+                primaryTextColor: '#333',
+                primaryBorderColor: '#4a90e2',
+                lineColor: '#6c757d',
+                secondaryColor: '#f3e5f5',
+                tertiaryColor: '#e8f5e9',
+                background: '#f8f9fa',
+                mainBkg: '#ffffff',
+                nodeBorder: '#dee2e6',
+                clusterBkg: '#f8f9fa',
+                clusterBorder: '#e9ecef',
+                titleColor: '#333',
+                edgeLabelBackground: '#ffffff',
+                altBkg: '#f8f9fa'
+            }
+        });
+    </script>
+</body>
+</html>
